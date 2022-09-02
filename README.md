@@ -1,0 +1,1 @@
+# vk-tg-main-bug
