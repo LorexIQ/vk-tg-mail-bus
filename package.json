@@ -1,0 +1,26 @@
+{
+  "name": "vk-tg-main-bug",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/LorexIQ/vk-tg-main-bug.git"
+  },
+  "author": "LorexIQ",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/LorexIQ/vk-tg-main-bug/issues"
+  },
+  "homepage": "https://github.com/LorexIQ/vk-tg-main-bug#readme",
+  "dependencies": {
+    "@vk-io/hear": "^1.1.0",
+    "dotenv": "^16.0.2",
+    "node-localstorage": "^2.2.1",
+    "node-telegram-bot-api": "^0.59.0",
+    "vk-io": "^4.6.0"
+  }
+}
