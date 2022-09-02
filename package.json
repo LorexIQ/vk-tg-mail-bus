@@ -1,5 +1,5 @@
 {
-  "name": "vk-tg-main-bug",
+  "name": "vk-tg-mail-bus",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -8,14 +8,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/LorexIQ/vk-tg-main-bug.git"
+    "url": "git+https://github.com/LorexIQ/vk-tg-mail-bus.git"
   },
   "author": "LorexIQ",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/LorexIQ/vk-tg-main-bug/issues"
+    "url": "https://github.com/LorexIQ/vk-tg-mail-bus/issues"
   },
-  "homepage": "https://github.com/LorexIQ/vk-tg-main-bug#readme",
+  "homepage": "https://github.com/LorexIQ/vk-tg-mail-bus#readme",
   "dependencies": {
     "@vk-io/hear": "^1.1.0",
     "dotenv": "^16.0.2",
