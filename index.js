@@ -11,43 +11,54 @@ const vk = new VK({
 const tg = new telegramBot(process.env.TG_BOT_TOKEN, { polling: true })
 
 // VK manipulation
-async function parseVkMessage(msg, italic=false) {
-    let message = ''
-    if (msg.text) {
-        const userInfo = (await vk.api.users.get({
-            user_ids: msg.senderId
-        }))[0]
-        if (!userInfo) {
-            const groupInfo = (await vk.api.groups.getById({
-               group_ids: msg.senderId
+async function formMessage(idSender, text, type, reply=false, level=0) {
+    let resultMessage = '' + (level > 0 ? '      '.repeat(level - 1) + '↪️' : '')
+    switch (type) {
+        case 'user':
+            const userInfo = (await vk.api.users.get({
+                user_ids: idSender
             }))[0]
-            message += `👥 *${groupInfo.name}* ↩️\n`
-            if (italic) {
-                message += '_' + msg.text + '_'
-            } else {
-                message += msg.text
-            }
-        } else {
-            if (msg.replyMessage) {{
-                message += await parseVkMessage(msg.replyMessage, true) + '\n\n'
-                message += `*${userInfo.last_name} ${userInfo.first_name.slice(0, 1)}.*\n`
-            }} else {
-                message += `👤 *${userInfo.last_name} ${userInfo.first_name.slice(0, 1)}.* ${italic ? '↩️' : ''}\n`
-            }
-            if (italic) {
-                message += '_' + msg.text + '_'
-            } else {
-                message += msg.text
+            resultMessage += `👤 *${userInfo.last_name} ${userInfo.first_name.slice(0, 1)}.*${reply ? ' ↩️' : ''}\n`
+            resultMessage += text ? '      '.repeat(level + 1) + (reply ? `_${text}_\n` : `${text}\n`) : ''
+            break
+        case 'group':
+            const groupInfo = (await vk.api.groups.getById({
+                group_ids: idSender
+            }))[0]
+            resultMessage += `👥 *${groupInfo.name}*${reply ? ' ↩️' : ''}\n`
+            resultMessage += text ? '      '.repeat(level + 1) + `${text}\n` : ''
+            break
+    }
+    return resultMessage
+}
+async function parseVkMessageForwards(msg) {
+    let message = ''
+    for (const forward of msg.forwards) {
+
+    }
+}
+async function parseVkMessage(msg, reply=false, level=0) {
+    let message = ''
+    if (msg.replyMessage) {
+        message += await parseVkMessage(msg.replyMessage, true)
+    }
+    if (level === 0) {
+        message += await formMessage(msg.senderId, msg.text, msg.senderType, reply)
+        level++
+    }
+    if (msg.forwards && msg.forwards.length) {
+        for (const forward of msg.forwards) {
+            message += await formMessage(forward.senderId, forward.text, forward.senderType, false, level)
+            if (forward.forwards && forward.forwards.length) {
+                message += await parseVkMessage(forward,false, level + 1)
             }
         }
-    } else {
-        message += '123'
     }
     return message
 }
 vk.updates.on('message_new', async (context) => {
-    console.log(context)
     if (localStorage['BUS_ENDPOINT_ID']) {
+        console.log(context)
         await tg.sendMessage(localStorage['BUS_ENDPOINT_ID'], await parseVkMessage(context), { parse_mode: 'markdown' })
     } else {
         await context.send('Endpoint is not registered! Connect Tg bot to your group and white \'/reg\' in the chat')
